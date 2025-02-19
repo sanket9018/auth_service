@@ -25,7 +25,7 @@ This is a Django-based authentication service that provides user registration, l
 
 1. Clone the repository:
     ```
-    git clone https://github.com/sanket9018/auth_service
+    git clone https://github.com/your-repo/auth_service.git
     cd auth_service
     ```
 
@@ -39,15 +39,15 @@ This is a Django-based authentication service that provides user registration, l
     ```
     pip install -r requirements.txt
     ```
-<!-- 
-4. Set up the environment variables:
-    ```sh
-    cp auth_service/.env-sample auth_service/.env
-    ``` -->
 
 4. Update the `.env` file with your database and email configurations.
 
 5. Apply the migrations:
+    ```
+    python manage.py migration
+    ```
+
+6. Apply the migrate:
     ```
     python manage.py migrate
     ```
