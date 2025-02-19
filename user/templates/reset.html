@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Password</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f4f4f4;
+    }
+    .container {
+        background: white;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+    input {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+    }
+    button {
+        background: #007bff;
+        color: white;
+        padding: 10px;
+        border: none;
+        cursor: pointer;
+    }
+    button:hover {
+        background: #0056b3;
+    }
+    p {
+        font-size: 14px;
+    }
+    
+</style>
+    <body>
+        <div class="container">
+            <h2>Reset Your Password</h2>
+            <input type="password" id="newPassword" placeholder="Enter new password">
+            <button onclick="handleReset()">Reset Password</button>
+            <p id="message"></p>
+        </div>
+        <script src="api.js"></script>
+        <script src="reset.js"></script>
+    </body>
+<script>
+    function getQueryParams() {
+        const params = new URLSearchParams(window.location.search);
+        return { uid: params.get("uid"), token: params.get("token") };
+    }
+
+    async function resetPassword(uid, token, newPassword) {
+        try {
+            const response = await fetch("http://127.0.0.1:8000/api/user/v1/password-reset/confirm/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ uid: uid, token: token, new_password: newPassword })
+            });
+
+            return await response.json();
+        } catch (error) {
+            console.error("Error resetting password:", error);
+            return { error: "Network error. Please try again." };
+        }
+    }
+
+    function handleReset() {
+        const { uid, token } = getQueryParams();
+        const newPassword = document.getElementById("newPassword").value;
+        const messageEl = document.getElementById("message");
+
+        if (!newPassword) {
+            messageEl.innerText = "Password is required.";
+            messageEl.style.color = "red";
+            return;
+        }
+
+        resetPassword(uid, token, newPassword)
+            .then(response => {
+                if (response.message) {
+                    messageEl.innerText = "Password reset successful!";
+                    messageEl.style.color = "green";
+                    setTimeout(() => {
+                        window.location.href = "http://127.0.0.1:8000/api/user/password-reset-request/";  // Redirect to login page
+                    }, 2000);
+                } else {
+                    messageEl.innerText = response.error || "Invalid or expired token.";
+                    messageEl.style.color = "red";
+                }
+            })
+            .catch(() => {
+                messageEl.innerText = "Failed to reset password.";
+                messageEl.style.color = "red";
+            });
+    }
+</script>
+
+</html>

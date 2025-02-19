@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Password Reset</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f4f4f4;
+    }
+    .container {
+        background: white;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+    input {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+    }
+    button {
+        background: #007bff;
+        color: white;
+        padding: 10px;
+        border: none;
+        cursor: pointer;
+    }
+    button:hover {
+        background: #0056b3;
+    }
+    p {
+        font-size: 14px;
+    }
+</style>
+<body>
+    <div class="container">
+        <h2>Request Password Reset</h2>
+        <input type="email" id="email" placeholder="Enter your email">
+        <button onclick="handleRequest()">Send Reset Link</button>
+        <p id="message"></p>
+    </div>
+
+    <script>
+        function handleRequest() {
+            const email = document.getElementById("email").value;
+            const messageEl = document.getElementById("message");
+
+            if (!email) {
+                messageEl.innerText = "Email is required.";
+                messageEl.style.color = "red";
+                return;
+            }
+
+            fetch("http://127.0.0.1:8000/api/user/v1/password-reset/", {  // Update with your actual backend API URL
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: email })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    messageEl.innerText = "Password reset link sent!";
+                    messageEl.style.color = "green";
+                } else {
+                    messageEl.innerText = data.error || "Something went wrong.";
+                    messageEl.style.color = "red";
+                }
+            })
+            .catch(() => {
+                messageEl.innerText = "Failed to send request.";
+                messageEl.style.color = "red";
+            });
+        }
+    </script>
+</body>
+</html>
