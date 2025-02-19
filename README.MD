@@ -25,7 +25,7 @@ This is a Django-based authentication service that provides user registration, l
 
 1. Clone the repository:
     ```
-    git clone https://github.com/your-repo/auth_service.git
+    git clone https://github.com/sanket9018/auth_service
     cd auth_service
     ```
 
